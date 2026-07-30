@@ -19,7 +19,7 @@ def read_root():
 def generate_text(request: PromptRequest):
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-2.0-flash",
             contents=request.prompt,
         )
         return {"response": response.text}
