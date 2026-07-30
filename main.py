@@ -5,7 +5,6 @@ from google import genai
 
 app = FastAPI(title="QA Jigs API")
 
-# Initialize the Gemini client using the environment variable we set on Render
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
 class PromptRequest(BaseModel):
@@ -19,7 +18,7 @@ def read_root():
 def generate_text(request: PromptRequest):
     try:
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-1.5-flash",
             contents=request.prompt,
         )
         return {"response": response.text}
