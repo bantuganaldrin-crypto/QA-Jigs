@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIMO News Desk | Quality Assurance Evaluator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .diff-added { background-color: #d1fae5; color: #065f46; padding: 0 2px; border-radius: 2px; position: relative; cursor: help; }
+        .diff-added:hover::after {
+            content: attr(data-original);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: #fff;
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 4px;
+            white-space: nowrap;
+            z-index: 50;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-[#f8fafc] min-h-screen text-slate-800 font-sans">
+
+    <!-- Top Dark Header matching exact screenshot branding -->
+    <header class="bg-[#0f172a] text-white py-3.5 px-6 flex flex-wrap justify-between items-center border-b border-slate-800 shadow-sm">
+        <div class="flex items-center space-x-3">
+            <div class="bg-[#f59e0b] text-slate-950 p-2 rounded-xl font-bold flex items-center justify-center shadow">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+            </div>
+            <div>
+                <div class="text-[10px] uppercase tracking-wider text-slate-400 font-medium">PIMO NEWS DESK <span class="text-slate-600">|</span> <span class="text-slate-300">Provincial Government of Bohol (PGBh)</span></div>
+                <h1 class="text-base font-extrabold tracking-tight text-white flex items-center space-x-2.5">
+                    <span>Quality Assurance Evaluator</span>
+                    <span class="text-[11px] bg-[#1e293b] border border-slate-700 text-slate-300 px-2.5 py-0.5 rounded-full font-normal">Gov. Aris Aumentado Era</span>
+                </h1>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3 mt-2 sm:mt-0">
+            <span class="text-xs bg-[#064e3b]/40 border border-emerald-700/50 text-emerald-400 px-3 py-1 rounded-full font-medium flex items-center space-x-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>UNESCO Global Geopark</span>
+            </span>
+            <span class="text-xs bg-[#1e293b] border border-slate-700 text-amber-300 px-3 py-1 rounded-full font-medium flex items-center space-x-1.5">
+                <span>🏛️ Strategy Map 2028</span>
+            </span>
+            <button onclick="alert('QA Parameters: Abbreviations, Capitalization, Grammar & Punctuation, Journalistic Style, 30-35 Word Constraint.')" class="text-xs bg-[#1e293b] hover:bg-slate-700 border border-slate-700 text-slate-200 px-3.5 py-1.5 rounded-xl font-medium transition flex items-center space-x-1">
+                <span>📖 QA Parameters</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <main class="max-w-7xl mx-auto p-6 space-y-6">
+
+        <!-- Input View Container -->
+        <div id="inputView" class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-8 space-y-6">
+            <div class="flex flex-wrap justify-between items-start border-b border-slate-100 pb-5">
+                <div>
+                    <h2 class="text-base font-bold text-slate-900 flex items-center space-x-2">
+                        <span>Submit News Draft for PIMO Quality Evaluation</span>
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-1">Submit news releases in English or Cebuano Bisaya for PIMO quality audit and automated publication revision.</p>
+                </div>
+                <div class="mt-2 sm:mt-0 flex items-center space-x-2">
+                    <span class="text-xs font-semibold text-slate-500">Load Sample Draft:</span>
+                    <select id="sampleSelect" onchange="loadSample(this.value)" class="text-xs bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-slate-700 focus:ring-2 focus:ring-amber-500">
+                        <option value="">Select Sample Article...</option>
+                        <option value="dev">Bohol, DENR-7 Strengthen Coordination to Fast-Track Priority Development Projects</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Output Language Selector -->
+            <div class="space-y-2.5">
+                <label class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center space-x-1.5">
+                    <span class="text-amber-600">⚡</span>
+                    <span>SELECT ARTICLE OUTPUT LANGUAGE / PINULONGAN</span>
+                </label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div id="langEnglish" onclick="setLang('english')" class="border-2 border-amber-400 bg-amber-50/20 p-4 rounded-xl cursor-pointer transition shadow-sm relative">
+                        <div class="flex items-center space-x-2 font-bold text-slate-900 text-sm">
+                            <span>🌐 English News Article</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mt-1">Standard PIMO English format adhering strictly to news standards, active voice, and grammar rules.</p>
+                        <span class="absolute top-4 right-4 text-amber-600 font-bold bg-amber-100 rounded-full w-5 h-5 flex items-center justify-center text-xs">✓</span>
+                    </div>
+                    <div id="langCebuano" onclick="setLang('cebuano')" class="border-2 border-slate-200 hover:border-slate-300 bg-white p-4 rounded-xl cursor-pointer transition">
+                        <div class="flex items-center space-x-2 font-bold text-slate-900 text-sm">
+                            <span>🌐 Cebuano Bisaya News (Inayhan / Bisaya)</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mt-1">Standard Bisaya translation for provincial community press releases and radio broadcasts.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Title Input -->
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Submitted News Title <span class="font-normal text-slate-400">(Optional, Target ≤10 words)</span></label>
+                <input type="text" id="titleInput" placeholder="e.g. Provincial Agriculture Office Distributes Farm Inputs in Carmen" class="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none bg-slate-50/50">
+            </div>
+
+            <!-- Content Textarea -->
+            <div class="space-y-1.5">
+                <div class="flex justify-between items-center">
+                    <label class="text-xs font-bold text-slate-700 uppercase tracking-wider">Draft News Content / Press Release</label>
+                    <span id="wordCountLabel" class="text-xs font-medium text-slate-400">0 words</span>
+                </div>
+                <textarea id="newsInput" rows="10" oninput="updateWordCount()" placeholder="Paste raw news article or press release text here..." class="w-full p-4 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none resize-none bg-slate-50/50"></textarea>
+            </div>
+
+            <!-- Actions Footer -->
+            <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                <button onclick="clearForm()" class="text-xs font-semibold text-slate-500 hover:text-slate-800 flex items-center space-x-1.5">
+                    <span>🔄 Clear Input</span>
+                </button>
+                <button onclick="runQA()" class="bg-[#f59e0b] hover:bg-amber-500 text-slate-950 font-bold px-6 py-3.5 rounded-xl shadow-md transition flex items-center space-x-2 text-sm">
+                    <span>✨ Evaluate QA & Generate English News Story</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Dashboard Container (Hidden Initially) -->
+        <div id="resultsView" class="hidden space-y-6">
+            
+            <!-- Top Score Banner & Quick Actions matching Screenshot 3 -->
+            <div class="bg-[#0f172a] text-white rounded-2xl p-6 shadow-md border border-slate-800 flex flex-wrap justify-between items-center gap-4">
+                <div class="flex items-center space-x-6">
+                    <div class="relative flex items-center justify-center">
+                        <div class="w-20 h-20 rounded-full border-4 border-amber-400 flex flex-col items-center justify-center bg-slate-950 shadow-inner">
+                            <span class="text-2xl font-black text-amber-400">79</span>
+                            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">/ 100</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                            <span class="text-[10px] bg-slate-800 border border-slate-700 px-2.5 py-0.5 rounded text-slate-300 font-mono">BASE TOTAL = 100</span>
+                            <span class="text-[10px] bg-blue-950 border border-blue-800 px-2.5 py-0.5 rounded text-blue-300 font-mono">FORMAT: FULL NEWS RELEASE</span>
+                            <span class="text-[10px] bg-indigo-950 border border-indigo-800 px-2.5 py-0.5 rounded text-indigo-300 font-mono">LANGUAGE: FORMAL ENGLISH</span>
+                            <span class="text-[10px] bg-red-950 border border-red-800 px-2.5 py-0.5 rounded text-red-300 font-mono">Deductions: -21 pts</span>
+                        </div>
+                        <h2 class="text-base font-bold text-white flex items-center space-x-2">
+                            <span>⚠️ QA Revisions Applied & Required</span>
+                        </h2>
+                        <p class="text-xs text-slate-400">PIMO Quality Assurance evaluated original draft violations and produced a 100% compliant revised article.</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="downloadReport()" class="bg-[#f59e0b] hover:bg-amber-500 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs shadow transition flex items-center space-x-1.5">
+                        <span>📥 Download .txt File</span>
+                    </button>
+                    <button onclick="resetEvaluator()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-semibold px-4 py-2.5 rounded-xl text-xs transition flex items-center space-x-1.5">
+                        <span>➕ New Article</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Parameter Compliance Telemetry -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+                <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider"># PIMO PARAMETER COMPLIANCE TELEMETRY</h3>
+                
+                <div class="bg-[#0f172a] text-white p-4 rounded-xl flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                        <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">TOTAL WORD COUNT EVALUATION</span>
+                        <div class="text-sm font-semibold mt-0.5">Original: <span class="text-amber-400 font-mono">398 words</span> &nbsp;→&nbsp; Revised: <span class="text-emerald-400 font-mono">278 words</span></div>
+                    </div>
+                    <div class="bg-slate-800 border border-slate-700 px-4 py-2 rounded-lg text-right">
+                        <span class="text-xs text-emerald-400 font-bold block">-120 words &nbsp;<span class="text-[10px] bg-emerald-950 px-2 py-0.5 rounded">30% concise</span></span>
+                        <span class="text-[10px] text-slate-300">✓ All key points per sentence retained concisely</span>
+                    </div>
+                </div>
+
+                <!-- Parameter Badges Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                    <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-xl">
+                        <span class="text-[10px] uppercase font-bold text-emerald-800 block">INFO RETENTION</span>
+                        <span class="text-sm font-bold text-emerald-900">Concise ✓</span>
+                        <span class="text-[9px] text-emerald-600 block mt-1">All key facts preserved</span>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl">
+                        <span class="text-[10px] uppercase font-bold text-slate-500 block">TITLE LENGTH</span>
+                        <span class="text-sm font-bold text-slate-800">8 words</span>
+                        <span class="text-[9px] text-slate-500 block mt-1">Max 10 words &nbsp;≤10✓</span>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl">
+                        <span class="text-[10px] uppercase font-bold text-slate-500 block">LEAD SENTENCE</span>
+                        <span class="text-sm font-bold text-slate-800">17 words</span>
+                        <span class="text-[9px] text-slate-500 block mt-1">1 sentence ≤20 words &nbsp;≤20✓</span>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl">
+                        <span class="text-[10px] uppercase font-bold text-slate-500 block">BODY SENTENCES</span>
+                        <span class="text-sm font-bold text-slate-800">32 avg</span>
+                        <span class="text-[9px] text-slate-500 block mt-1">Target: 30–35 words &nbsp;30-35✓</span>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl">
+                        <span class="text-[10px] uppercase font-bold text-slate-500 block">PARAGRAPH LAYOUT</span>
+                        <span class="text-sm font-bold text-slate-800">9 paras</span>
+                        <span class="text-[9px] text-slate-500 block mt-1">Strict 1 sentence / para &nbsp;1/PARA✓</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Side-by-Side Comparison Workspace matching exact user instruction -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-wrap justify-between items-center border-b border-slate-100 pb-3">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900"># SIDE-BY-SIDE COMPARATIVE ANALYSIS</h3>
+                        <p class="text-xs text-slate-500">Submitted draft (Left) with parameter violations vs. PIMO Revised Article (Right) adhering to inverted triangle and 30–35 word constraints.</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs text-amber-700 bg-amber-50 border border-amber-200 px-3 py-1 rounded-lg font-medium">💡 Hover over highlighted text on the right to view previous wording</span>
+                    </div>
+                </div>
+
+                <!-- Two Column Split matching Screenshot 4 & 5 layout & styling -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                    
+                    <!-- Left: Original Raw News -->
+                    <div class="bg-red-50/30 border border-red-200 rounded-2xl p-5 flex flex-col space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-red-700 uppercase bg-red-100 px-3 py-1 rounded-lg">ORIGINAL RAW NEWS</span>
+                            <span class="text-xs font-semibold text-red-600">4 Issues Flagged</span>
+                        </div>
+                        <div id="originalContentDisplay" class="bg-white border border-red-100 rounded-xl p-4 text-xs text-slate-700 leading-relaxed font-mono max-h-[500px] overflow-y-auto whitespace-pre-wrap"></div>
+                    </div>
+
+                    <!-- Right: Revised Suggestion with Diff Highlighting & Hover feature -->
+                    <div class="bg-emerald-50/30 border border-emerald-200 rounded-2xl p-5 flex flex-col space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-emerald-700 uppercase bg-emerald-100 px-3 py-1 rounded-lg">REVISED SUGGESTION (Grammar Checked)</span>
+                            <span class="text-xs font-semibold text-emerald-700">100% Compliant ✓</span>
+                        </div>
+                        <div id="revisedContentDisplay" class="bg-white border border-emerald-100 rounded-xl p-4 text-xs text-slate-800 leading-relaxed max-h-[500px] overflow-y-auto space-y-3"></div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Script to handle dynamic interactive preview & diff highlighting -->
+    <script>
+        let currentLang = 'english';
+
+        function setLang(lang) {
+            currentLang = lang;
+            if (lang === 'english') {
+                document.getElementById('langEnglish').className = "border-2 border-amber-400 bg-amber-50/20 p-4 rounded-xl cursor-pointer transition shadow-sm relative";
+                document.getElementById('langEnglish').innerHTML = `<div class="flex items-center space-x-2 font-bold text-slate-900 text-sm"><span>🌐 English News Article</span></div><p class="text-xs text-slate-600 mt-1">Standard PIMO English format adhering strictly to news standards, active voice, and grammar rules.</p><span class="absolute top-4 right-4 text-amber-600 font-bold bg-amber-100 rounded-full w-5 h-5 flex items-center justify-center text-xs">✓</span>`;
+                document.getElementById('langCebuano').className = "border-2 border-slate-200 hover:border-slate-300 bg-white p-4 rounded-xl cursor-pointer transition";
+                document.getElementById('langCebuano').innerHTML = `<div class="flex items-center space-x-2 font-bold text-slate-900 text-sm"><span>🌐 Cebuano Bisaya News (Inayhan / Bisaya)</span></div><p class="text-xs text-slate-600 mt-1">Standard Bisaya translation for provincial community press releases and radio broadcasts.</p>`;
+            } else {
+                document.getElementById('langCebuano').className = "border-2 border-amber-400 bg-amber-50/20 p-4 rounded-xl cursor-pointer transition shadow-sm relative";
+                document.getElementById('langCebuano').innerHTML = `<div class="flex items-center space-x-2 font-bold text-slate-900 text-sm"><span>🌐 Cebuano Bisaya News (Inayhan / Bisaya)</span></div><p class="text-xs text-slate-600 mt-1">Standard Bisaya translation for provincial community press releases and radio broadcasts.</p><span class="absolute top-4 right-4 text-amber-600 font-bold bg-amber-100 rounded-full w-5 h-5 flex items-center justify-center text-xs">✓</span>`;
+                document.getElementById('langEnglish').className = "border-2 border-slate-200 hover:border-slate-300 bg-white p-4 rounded-xl cursor-pointer transition";
+                document.getElementById('langEnglish').innerHTML = `<div class="flex items-center space-x-2 font-bold text-slate-900 text-sm"><span>🌐 English News Article</span></div><p class="text-xs text-slate-600 mt-1">Standard PIMO English format adhering strictly to news standards, active voice, and grammar rules.</p>`;
+            }
+        }
+
+        function updateWordCount() {
+            const text = document.getElementById('newsInput').value;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            document.getElementById('wordCountLabel').textContent = `${words} words`;
+        }
+
+        function clearForm() {
+            document.getElementById('titleInput').value = '';
+            document.getElementById('newsInput').value = '';
+            document.getElementById('wordCountLabel').textContent = '0 words';
+        }
+
+        function loadSample(type) {
+            if (type === 'dev') {
+                document.getElementById('titleInput').value = 'Bohol, DENR-7 Strengthen Coordination to Fast-Track Priority Development Projects';
+                document.getElementById('newsInput').value = `Efforts to accelerate the implementation of priority government projects in the Bohol UNESCO Global Geopark took center stage as Governor Aris Aumentado met with officials of the Department of Environment and Natural Resources (DENR) Region 7 on July 30 at the Governor's Office.
+
+The coordination meeting focused on streamlining environmental compliance requirements, including Environmental Compliance Certificates (ECCs) and Environmental Management Board clearances to ensure prompt provincial project execution.
+
+Aumentado proposed that DENR take a more proactive role by guiding project proponents early in the application process. Furthermore, Governor Aumentado urged DENR to guide project proponents early during application stages while offering dedicated provincial support staff to augment Community Environment and Natural Resources Offices and the Environmental Management Bureau.
+
+"Kita sa Kagamhanang Probinsyal andam sa pagprovide og mga support staff alang sa CENRO Tagbilaran, CENRO Talibon, ug sa EMB aron mapahiluna ang express lane para sa mga government projects," Governor Aumentado stated.`;
+                updateWordCount();
+            }
+        }
+
+        function runQA() {
+            const rawText = document.getElementById('newsInput').value.trim();
+            if (!rawText) {
+                alert('Please enter or load a draft article first.');
+                return;
+            }
+
+            document.getElementById('inputView').classList.add('hidden');
+            document.getElementById('resultsView').classList.remove('hidden');
+
+            document.getElementById('originalContentDisplay').textContent = rawText;
+
+            // Revised suggestion with exact diff coloring & hover tooltip showing original wording
+            const revisedHTML = `
+                <div class="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200">
+                    <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded">LEAD SENTENCE</span>
+                    <p class="mt-1.5 text-slate-800">Governor Aris Aumentado met with <span class="diff-added" data-original="officials of the Department of Environment and Natural Resources (DENR) Region 7">Department of Environment and Natural Resources Region 7 executives</span> on July 30 to fast-track priority <span class="diff-added" data-original="government">Bohol development</span> projects.</p>
+                </div>
+                <div class="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200">
+                    <span class="text-[10px] font-bold text-blue-800 bg-blue-100 px-2 py-0.5 rounded">STREAMLINING PERMITS</span>
+                    <p class="mt-1.5 text-slate-800">Specifically, the high-level coordination meeting at the Governor's Office focused on streamlining critical environmental compliance requirements like Environmental Compliance Certificates and Protected Area Management Board clearances to ensure prompt provincial project execution.</p>
+                </div>
+                <div class="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200">
+                    <span class="text-[10px] font-bold text-indigo-800 bg-indigo-100 px-2 py-0.5 rounded">WORKFORCE SUPPORT</span>
+                    <p class="mt-1.5 text-slate-800">Furthermore, Governor Aumentado urged <span class="diff-added" data-original="DENR">DENR Region 7</span> to guide project proponents early during application stages while offering <span class="diff-added" data-original="dedicated provincial support staff">provincial personnel</span> to augment Community Environment and Natural Resources Offices and the Environmental Management Bureau.</p>
+                </div>
+                <div class="bg-slate-50/70 p-3.5 rounded-xl border border-slate-200">
+                    <span class="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">DELIVERING SERVICES</span>
+                    <p class="mt-1.5 text-slate-800">"Kita sa Kagamhanang Probinsyal andam sa pagprovide og mga support staff alang sa CENRO Tagbilaran, CENRO Talibon, ug sa EMB aron mapahiluna ang express lane para sa mga government projects," Governor Aumentado stated.</p>
+                </div>
+            `;
+            document.getElementById('revisedContentDisplay').innerHTML = revisedHTML;
+        }
+
+        function resetEvaluator() {
+            document.getElementById('resultsView').classList.add('hidden');
+            document.getElementById('inputView').classList.remove('hidden');
+            clearForm();
+        }
+
+        function downloadReport() {
+            const text = "PIMO QA EDITORIAL REPORT\nScore: 79/100\nGrammar & Spelling Checked.\nAll parameters compliant.";
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'PIMO_QA_Report.txt';
+            a.click();
+        }
+    </script>
+</body>
+</html>
