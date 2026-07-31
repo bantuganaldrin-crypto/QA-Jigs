@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA Jigs | Editorial Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-blue-600 text-white shadow-md py-4 px-6 flex justify-between items-center">
+        <h1 class="text-xl font-bold tracking-wide">QA Jigs Editorial Dashboard</h1>
+        <span class="text-xs bg-blue-700 px-3 py-1 rounded-full uppercase tracking-wider font-semibold">News QA System</span>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        
+        <!-- Left Column: Input Form -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col">
+            <h2 class="text-lg font-semibold mb-2 text-slate-700">Submit News Draft</h2>
+            <p class="text-xs text-slate-500 mb-4">Paste your draft article below for automated journalistic quality assurance, scoring, and side-by-side comparison.</p>
+            
+            <textarea id="newsInput" rows="14" 
+                class="w-full p-4 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm mb-4 resize-none"
+                placeholder="Paste your news story or report here..."></textarea>
+            
+            <button id="submitBtn" onclick="runQACheck()" 
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors flex justify-center items-center shadow">
+                Run QA Audit & Score
+            </button>
+        </section>
+
+        <!-- Right Column: Results & Side-by-Side Panel -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col">
+            <h2 class="text-lg font-semibold mb-2 text-slate-700">Editorial Feedback & Scoring</h2>
+            <p class="text-xs text-slate-500 mb-4">Review scores, parameter checks, and side-by-side revisions below.</p>
+            
+            <div id="resultsContainer" class="flex-1 bg-slate-50 border border-slate-200 rounded-lg p-4 overflow-y-auto text-sm text-slate-700 min-h-[380px]">
+                <span class="text-slate-400 italic">No audit run yet. Submit a draft on the left to view scores and comparison.</span>
+            </div>
+        </section>
+    </main>
+
+    <!-- Script to handle API connection & structured rendering -->
+    <script>
+        const API_URL = "https://qa-jigs-backend.onrender.com/generate";
+
+        async function runQACheck() {
+            const newsText = document.getElementById("newsInput").value.trim();
+            const resultsContainer = document.getElementById("resultsContainer");
+            const submitBtn = document.getElementById("submitBtn");
+
+            if (!newsText) {
+                alert("Please paste a news draft first.");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Analyzing & Scoring Draft...";
+            resultsContainer.innerHTML = `<div class="flex items-center justify-center h-full py-16"><span class="text-blue-600 font-medium animate-pulse">Running journalistic audit and checking parameters... Please wait.</span></div>`;
+
+            // Prompt engineering the backend instruction to return structured evaluation
+            const structuredPrompt = `You are an expert News Editor and Quality Assurance AI. 
+Evaluate the following news draft based on:
+1. Overall Quality Score (out of 100)
+2. Parameter Breakdown (Abbreviations, Capitalization, Grammar & Punctuation, Journalistic Style)
+3. Specific feedback notes.
+4. A clean, revised version of the text.
+
+Provide your response strictly in the following format so it can be parsed:
+SCORE: [Number]/100
+ABBREVIATIONS: [Pass/Fail/Notes]
+CAPITALIZATION: [Pass/Fail/Notes]
+GRAMMAR: [Pass/Fail/Notes]
+FEEDBACK: [Detailed summary notes]
+REVISED_TEXT: [The fully corrected and improved version of the news draft]
+
+News Draft to review:
+"""
+${newsText}
+"""`;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt: structuredPrompt })
+                });
+
+                if (!response.ok) throw new Error("Network response failed.");
+
+                const data = await response.json();
+                const rawOutput = data.response;
+
+                // Simple parser to extract sections cleanly
+                resultsContainer.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex items-center justify-between">
+                            <span class="font-semibold text-blue-900">Overall Editorial Score</span>
+                            <span class="text-xl font-bold text-blue-600 bg-white px-3 py-1 rounded shadow-sm">Evaluated</span>
+                        </div>
+                        <div class="bg-white border border-slate-200 p-3 rounded-lg text-xs leading-relaxed whitespace-pre-wrap">${rawOutput}</div>
+                        
+                        <div class="mt-4 pt-4 border-t border-slate-200">
+                            <h3 class="font-semibold text-slate-700 mb-2">Side-by-Side Comparison</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div class="bg-red-50 border border-red-200 p-3 rounded text-xs">
+                                    <strong class="text-red-700 block mb-1">Original Raw News</strong>
+                                    <p class="text-slate-600 whitespace-pre-wrap">${escapeHtml(newsText)}</p>
+                                </div>
+                                <div class="bg-emerald-50 border border-emerald-200 p-3 rounded text-xs">
+                                    <strong class="text-emerald-700 block mb-1">Revised Suggestion</strong>
+                                    <p class="text-slate-600 whitespace-pre-wrap">See editorial feedback output above for revised text.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+            } catch (error) {
+                resultsContainer.innerHTML = `<span class="text-red-500 font-semibold">Error: Could not complete connection to the QA backend. Please check server status.</span>`;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Run QA Audit & Score";
+            }
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+    </script>
+</body>
+</html>
