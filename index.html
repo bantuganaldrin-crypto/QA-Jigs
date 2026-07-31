@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA Jigs | Editorial Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-blue-600 text-white shadow-md py-4 px-6 flex justify-between items-center">
+        <h1 class="text-xl font-bold tracking-wide">QA Jigs Editorial Dashboard</h1>
+        <span class="text-xs bg-blue-700 px-3 py-1 rounded-full uppercase tracking-wider font-semibold">News QA System</span>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-5xl mx-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        
+        <!-- Left Column: Input Form -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col">
+            <h2 class="text-lg font-semibold mb-2 text-slate-700">Submit News Draft</h2>
+            <p class="text-xs text-slate-500 mb-4">Paste your draft article below for automated journalistic quality assurance and editorial review.</p>
+            
+            <textarea id="newsInput" rows="12" 
+                class="w-full p-4 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm mb-4 resize-none"
+                placeholder="Paste your news story or report here..."></textarea>
+            
+            <button id="submitBtn" onclick="runQACheck()" 
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors flex justify-center items-center">
+                Run QA Audit
+            </button>
+        </section>
+
+        <!-- Right Column: Results Panel -->
+        <section class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col">
+            <h2 class="text-lg font-semibold mb-2 text-slate-700">Editorial Feedback & Status</h2>
+            <p class="text-xs text-slate-500 mb-4">Review the AI editor's assessment and required revisions below.</p>
+            
+            <div id="resultsContainer" class="flex-1 bg-slate-50 border border-slate-200 rounded-lg p-4 overflow-y-auto text-sm text-slate-700 min-h-[300px] whitespace-pre-wrap">
+                <span class="text-slate-400 italic">No audit run yet. Submit a draft on the left to view feedback.</span>
+            </div>
+        </section>
+    </main>
+
+    <!-- Script to handle API connection -->
+    <script>
+        const API_URL = "https://qa-jigs-backend.onrender.com/generate";
+
+        async function runQACheck() {
+            const newsText = document.getElementById("newsInput").value.trim();
+            const resultsContainer = document.getElementById("resultsContainer");
+            const submitBtn = document.getElementById("submitBtn");
+
+            if (!newsText) {
+                alert("Please paste a news draft first.");
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Analyzing Draft...";
+            resultsContainer.innerHTML = `<span class="text-blue-600 animate-pulse">Running QA audit on news draft... Please wait.</span>`;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ prompt: newsText })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Network response failed.");
+                }
+
+                const data = await response.json();
+                resultsContainer.innerHTML = data.response;
+
+            } catch (error) {
+                resultsContainer.innerHTML = `<span class="text-red-500 font-semibold">Error: Could not complete connection to the QA backend. Please check network/server status.</span>`;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Run QA Audit";
+            }
+        }
+    </script>
+</body>
+</html>
